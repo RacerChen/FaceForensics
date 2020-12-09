@@ -1,0 +1,1 @@
+python detect_from_video.py -i ../my_fake_video/test_video.mp4 -m ../Model/faceforensics++_models_subset/face_detection/xception/all_c23.p -o ../output_result
