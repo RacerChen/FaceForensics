@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from .xception import xception
 import math
 import torchvision
-XCEPTION_MODEL = '../input/deepfakemodelspackages/xception-b5690688.pth'
+XCEPTION_MODEL = '../Model/xception-b5690688.pth'
 
 
 def return_pytorch04_xception(pretrained=True):
