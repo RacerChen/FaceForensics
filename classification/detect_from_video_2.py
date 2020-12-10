@@ -72,6 +72,7 @@ def preprocess_image(image, cuda=True):
     # Add first dimension as the network expects a batch
     preprocessed_image = preprocessed_image.unsqueeze(0)
     if cuda:
+        print('cuda')
         preprocessed_image = preprocessed_image.cuda()
     return preprocessed_image
 
@@ -136,12 +137,15 @@ def test_full_image_network(video_path, model_path, output_path,
     # model_path = '../Model/faceforensics++_models_subset/face_detection/xception/all_c23.p'
     # choose model manually
     if model_path is not None:
-        model = torch.load(model_path, map_location='cuda:0')
         # model = torch.load(model_path, map_location={'cuda:1':'cuda:0'})
+        model = torch.load(model_path, map_location='cuda:0')
+        model = model.cuda()
+        # model = torch.load(model_path)
         print('Model found in {}'.format(model_path))
     else:
         print('No model found, initializing random model.')
     if cuda:
+        print('CUDA!')
         model = model.cuda()
 
     # Text variables
@@ -221,7 +225,8 @@ def test_full_image_network(video_path, model_path, output_path,
 
 
 if __name__ == '__main__':
-    print(torch.cuda.is_available())
+    print('CUDA is available: ' + str(torch.cuda.is_available()))
+    print('Device name: ' + torch.cuda.get_device_name(0))
     p = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('--video_path', '-i', type=str)
@@ -236,6 +241,7 @@ if __name__ == '__main__':
     video_path = args.video_path
     if video_path.endswith('.mp4') or video_path.endswith('.avi'):
         test_full_image_network(**vars(args))
+        print('xxx')
     else:
         videos = os.listdir(video_path)
         for video in videos:

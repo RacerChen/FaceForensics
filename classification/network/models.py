@@ -113,6 +113,12 @@ class TransferModel(nn.Module):
 
     def forward(self, x):
         x = self.model(x)
+        """
+        x = x.cuda()
+        from caffe2.quantization.server.observer_test import net
+        net.cuda()
+        net(x)
+        """
         return x
 
 

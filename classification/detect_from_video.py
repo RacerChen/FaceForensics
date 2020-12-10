@@ -131,7 +131,7 @@ def test_full_image_network(video_path, model_path, output_path,
     # Face detector
     face_detector = dlib.get_frontal_face_detector()
 
-    # Load model
+    # Load model **************************************************************************************************
     model, *_ = model_selection(modelname='xception', num_out_classes=2)
     if model_path is not None:
         model = torch.load(model_path)
@@ -139,6 +139,7 @@ def test_full_image_network(video_path, model_path, output_path,
     else:
         print('No model found, initializing random model.')
     if cuda:
+        print('cuda')
         model = model.cuda()
 
     # Text variables
@@ -218,6 +219,7 @@ def test_full_image_network(video_path, model_path, output_path,
 
 
 if __name__ == '__main__':
+    print(torch.__version__)
     p = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('--video_path', '-i', type=str)

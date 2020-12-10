@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/classification/dataset" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/classification/network" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/classification" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/dataset/my_fake_video" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

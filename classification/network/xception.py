@@ -166,6 +166,8 @@ class Xception(nn.Module):
         # #-----------------------------
 
     def features(self, input):
+        # input = input.cuda()  # if we use gpu, we need use this line
+
         x = self.conv1(input)
         x = self.bn1(x)
         x = self.relu(x)
