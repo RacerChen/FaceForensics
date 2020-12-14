@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/classification" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/dataset/my_fake_video" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.6.12 (sftp://jc@192.168.1.110:22/home/jc/anaconda3/envs/FaceForensics/bin/python3.6)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

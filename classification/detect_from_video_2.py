@@ -23,6 +23,7 @@ from tqdm import tqdm
 from network.models import model_selection
 from dataset.transform import xception_default_data_transforms
 
+QT_DEBUG_PLUGINS=1
 
 def get_boundingbox(face, width, height, scale=1.3, minsize=None):
     """
@@ -72,7 +73,6 @@ def preprocess_image(image, cuda=True):
     # Add first dimension as the network expects a batch
     preprocessed_image = preprocessed_image.unsqueeze(0)
     if cuda:
-        print('cuda')
         preprocessed_image = preprocessed_image.cuda()
     return preprocessed_image
 
@@ -119,6 +119,8 @@ def test_full_image_network(video_path, model_path, output_path,
     """
     print('Starting: {}'.format(video_path))
 
+    f_prediction = open(output_path + '/prediction.txt', 'w')
+
     # Read and write
     reader = cv2.VideoCapture(video_path)
 
@@ -138,7 +140,7 @@ def test_full_image_network(video_path, model_path, output_path,
     # choose model manually
     if model_path is not None:
         # model = torch.load(model_path, map_location={'cuda:1':'cuda:0'})
-        model = torch.load(model_path, map_location='cuda:0')
+        model = torch.load(model_path, map_location={'cuda:1':'cuda:0'})
         model = model.cuda()
         # model = torch.load(model_path)
         print('Model found in {}'.format(model_path))
@@ -173,9 +175,9 @@ def test_full_image_network(video_path, model_path, output_path,
         height, width = image.shape[:2]
 
         # Init output writer
-        if writer is None:
-            writer = cv2.VideoWriter(join(output_path, video_fn), fourcc, fps,
-                                     (height, width)[::-1])
+        # if writer is None:
+        #     writer = cv2.VideoWriter(join(output_path, video_fn), fourcc, fps,
+        #                              (height, width)[::-1])
 
         # 2. Detect with dlib
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -192,36 +194,45 @@ def test_full_image_network(video_path, model_path, output_path,
             # Actual prediction using our model
             prediction, output = predict_with_model(cropped_face, model,
                                                     cuda=cuda)
+            print('prediction:')
+            print(prediction)
+
+            f_prediction.write('Frame: ' + str(frame_num) + ', Prediction:' + str(prediction) + '\n')
+
+            print('output:')
+            print(output)
             # ------------------------------------------------------------------
 
             # Text and bb
-            x = face.left()
-            y = face.top()
-            w = face.right() - x
-            h = face.bottom() - y
-            label = 'fake' if prediction == 1 else 'real'
-            color = (0, 255, 0) if prediction == 0 else (0, 0, 255)
-            output_list = ['{0:.2f}'.format(float(x)) for x in
-                           output.detach().cpu().numpy()[0]]
-            cv2.putText(image, str(output_list)+'=>'+label, (x, y+h+30),
-                        font_face, font_scale,
-                        color, thickness, 2)
-            # draw box over face
-            cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+            # x = face.left()
+            # y = face.top()
+            # w = face.right() - x
+            # h = face.bottom() - y
+            # label = 'fake' if prediction == 1 else 'real'
+            # color = (0, 255, 0) if prediction == 0 else (0, 0, 255)
+            # output_list = ['{0:.2f}'.format(float(x)) for x in
+            #                output.detach().cpu().numpy()[0]]
+            # cv2.putText(image, str(output_list)+'=>'+label, (x, y+h+30),
+            #             font_face, font_scale,
+            #             color, thickness, 2)
+            # # draw box over face
+            # cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
 
         if frame_num >= end_frame:
+            f_prediction.close()
             break
 
         # Show
-        cv2.imshow('test', image)
+        # cv2.imshow('test', image)
+        # Linux server cmd cannot implement GUI.
         cv2.waitKey(33)     # About 30 fps
-        writer.write(image)
+        # writer.write(image)
     pbar.close()
-    if writer is not None:
-        writer.release()
-        print('Finished! Output saved under {}'.format(output_path))
-    else:
-        print('Input video file was empty')
+    # if writer is not None:
+    #     writer.release()
+    #     print('Finished! Output saved under {}'.format(output_path))
+    # else:
+    #     print('Input video file was empty')
 
 
 if __name__ == '__main__':
@@ -241,7 +252,6 @@ if __name__ == '__main__':
     video_path = args.video_path
     if video_path.endswith('.mp4') or video_path.endswith('.avi'):
         test_full_image_network(**vars(args))
-        print('xxx')
     else:
         videos = os.listdir(video_path)
         for video in videos:
