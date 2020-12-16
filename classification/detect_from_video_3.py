@@ -9,6 +9,8 @@ python detect_from_video.py
     -o <path to output folder, will write one or multiple output videos there>
 
 Author: Andreas Rössler
+
+Use for test performance of this FAKE DETECTION ALGORITHM
 """
 import os
 import argparse
@@ -120,7 +122,7 @@ def test_full_image_network(video_path, model_path, output_path,
     """
     print('Starting: {}'.format(video_path))
 
-    f_prediction = open(output_path + '/prediction.txt', 'w')
+    f_prediction = open(output_path + '/prediction.txt', 'a')
 
     # Read and write
     reader = cv2.VideoCapture(video_path)
@@ -219,7 +221,7 @@ def test_full_image_network(video_path, model_path, output_path,
             # # draw box over face
             # cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
 
-        if frame_num >= end_frame:
+        if frame_num >= 5:  # For time saving, only detecting the first 5 frame.
             f_prediction.close()
             break
 
