@@ -1,4 +1,4 @@
-# This code extracts frames from video to generate dataset.
+# Step1: This code extracts frames from video to generate dataset.
 
 import os
 import cv2
