@@ -10,7 +10,7 @@ import torch
 import pretrainedmodels
 import torch.nn as nn
 import torch.nn.functional as F
-from .xception import xception
+from xception import xception
 import math
 import torchvision
 XCEPTION_MODEL = '../Model/xception-b5690688.pth'
@@ -25,6 +25,26 @@ def return_pytorch04_xception(pretrained=True):
         del model.last_linear
         # state_dict = torch.load('/home/ondyari/.torch/models/xception-b5690688.pth')
         state_dict = torch.load(XCEPTION_MODEL)
+        for name, weights in state_dict.items():
+            if 'pointwise' in name:
+                state_dict[name] = weights.unsqueeze(-1).unsqueeze(-1)
+        model.load_state_dict(state_dict)
+        model.last_linear = model.fc
+        del model.fc
+    return model
+
+
+def return_pytorch04_xception_ft(pretrained=True, pretrain3epoch=True):
+    # Raises warning "src not broadcastable to dst" but thats fine
+    model = xception(2, pretrained=False)
+    if pretrained:
+        # Load model in torch 0.4+
+        model.fc = model.last_linear
+        del model.last_linear
+        if pretrain3epoch:
+            state_dict = torch.load('/home/jc/Faceforensics_onServer/Model/xception-b5690688.pth')
+        else:
+            state_dict = torch.load('/home/jc/Faceforensics_onServer/Model/xception-b5690688-after3epochs.pth')
         for name, weights in state_dict.items():
             if 'pointwise' in name:
                 state_dict[name] = weights.unsqueeze(-1).unsqueeze(-1)
