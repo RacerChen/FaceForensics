@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from xception import xception
 import math
 import torchvision
-XCEPTION_MODEL = '../Model/xception-b5690688.pth'
+XCEPTION_MODEL = '/home/jc/Faceforensics_onServer/Model/xception-b5690688.pth'
 
 
 def return_pytorch04_xception(pretrained=True):
@@ -36,21 +36,23 @@ def return_pytorch04_xception(pretrained=True):
 
 def return_pytorch04_xception_ft(pretrained=True, pretrain3epoch=True):
     # Raises warning "src not broadcastable to dst" but thats fine
-    model = xception(2, pretrained=False)
     if pretrained:
         # Load model in torch 0.4+
-        model.fc = model.last_linear
-        del model.last_linear
         if pretrain3epoch:
+            model = xception(pretrained=False)
+            model.fc = model.last_linear
+            del model.last_linear
             state_dict = torch.load('/home/jc/Faceforensics_onServer/Model/xception-b5690688.pth')
+            for name, weights in state_dict.items():
+                if 'pointwise' in name:
+                    state_dict[name] = weights.unsqueeze(-1).unsqueeze(-1)
+            model.load_state_dict(state_dict)
+            model.last_linear = model.fc
+            del model.fc
         else:
-            state_dict = torch.load('/home/jc/Faceforensics_onServer/Model/xception-b5690688-after3epochs.pth')
-        for name, weights in state_dict.items():
-            if 'pointwise' in name:
-                state_dict[name] = weights.unsqueeze(-1).unsqueeze(-1)
-        model.load_state_dict(state_dict)
-        model.last_linear = model.fc
-        del model.fc
+            model = xception(num_classes=2, pretrained=False)
+            state_dict = torch.load('/home/jc/Faceforensics_onServer/Model/xception-b5690688-after3epochs-noNT.pth')
+            model.load_state_dict(state_dict)
     return model
 
 
@@ -161,7 +163,7 @@ def model_selection(modelname, num_out_classes,
 
 
 if __name__ == '__main__':
-    model, image_size, *_ = model_selection('resnet18', num_out_classes=2)
+    model, image_size, *_ = model_selection('xception', num_out_classes=2)
     print(model)
     model = model.cuda()
     from torchsummary import summary
