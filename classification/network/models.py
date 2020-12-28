@@ -14,6 +14,7 @@ from xception import xception
 import math
 import torchvision
 XCEPTION_MODEL = '/home/jc/Faceforensics_onServer/Model/xception-b5690688.pth'
+# XCEPTION_MODEL = 'D:\\软件\\term1-simulator-windows\\FaceForensics\\Model\\xception-b5690688.pth'
 
 
 def return_pytorch04_xception(pretrained=True):
@@ -51,7 +52,7 @@ def return_pytorch04_xception_ft(pretrained=True, pretrain3epoch=True):
             del model.fc
         else:
             model = xception(num_classes=2, pretrained=False)
-            state_dict = torch.load('/home/jc/Faceforensics_onServer/Model/xception-b5690688-after3epochs-noNT.pth')
+            state_dict = torch.load('/home/jc/Faceforensics_onServer/Model/xception-b5690688-after3epochs-noNT-Big.pth')
             model.load_state_dict(state_dict)
     return model
 

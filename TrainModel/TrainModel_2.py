@@ -148,12 +148,13 @@ if __name__ == '__main__':
 
     if args.pretrain3epochs:
         pretrain3epoch = True
-        num_epochs = 3
+        num_epochs = 0
         print('True')
     else:
         pretrain3epoch = False
         num_epochs = 15
         print('False')
+
 
     model_ft = return_pytorch04_xception_ft(True, pretrain3epoch)
     set_parameter_requires_grad(model_ft, pretrain3epoch)
@@ -184,6 +185,7 @@ if __name__ == '__main__':
             if param.requires_grad == True:
                 print("\t", name)
 
+
     # Observe that all parameters are being optimized
     optimizer_ft = optim.SGD(params_to_update, lr=0.001, momentum=0.9)
 
@@ -194,8 +196,9 @@ if __name__ == '__main__':
     model_ft, hist = train_model(model_ft, dataloaders_dict, criterion, optimizer_ft, num_epochs=num_epochs)
 
     if pretrain3epoch:
+        # torch.save(model_ft.state_dict(), '/home/jc/Faceforensics_onServer/Model/xception-b5690688-after3epochs-noNT-Big.pth')
         torch.save(model_ft.state_dict(),
-                   '/home/jc/Faceforensics_onServer/Model/xception-b5690688-after3epochs-noNT-Big.pth')
+                   '/home/jc/Faceforensics_onServer/Model/xception-b5690688-after0epochs-noNT-Big.pth')
     else:
         torch.save(model_ft.state_dict(),
                    '/home/jc/Faceforensics_onServer/Model/xception-b5690688-after15epochs-noNT-Big.pth')
