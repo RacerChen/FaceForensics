@@ -32,13 +32,15 @@ pretrained_settings = {
     'xception': {
         'imagenet': {
             'url': 'http://data.lip6.fr/cadene/pretrainedmodels/xception-b5690688.pth',
+            # 'url': '/home/jc/Faceforensics_onServer/Model/xception-b5690688.pth',
             'input_space': 'RGB',
             'input_size': [3, 299, 299],
             'input_range': [0, 1],
             'mean': [0.5, 0.5, 0.5],
             'std': [0.5, 0.5, 0.5],
             'num_classes': 1000,
-            'scale': 0.8975 # The resize parameter of the validation transform should be 333, and make sure to center crop at 299x299
+            'scale': 0.8975
+            # The resize parameter of the validation transform should be 333, and make sure to center crop at 299x299
         }
     }
 }
@@ -202,7 +204,8 @@ class Xception(nn.Module):
 
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
-        x = self.last_linear(x)
+        # x = self.fc(x)  # Before change
+        x = self.last_linear(x)  # Change for debug
         return x
 
     def forward(self, input):
