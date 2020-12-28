@@ -1,4 +1,4 @@
-# Get prediction tag from our trained model: detect all images in a directory
+# Get prediction tag from our trained model: detect all images in a directory (no face detection)
 """
 Evaluates a folder of video files or a single file with a xception binary
 classification network.
@@ -123,9 +123,7 @@ def test_full_image_network(data_path, model_path, output_path,
     :param cuda: enable cuda
     :return:
     """
-    f_prediction = open(output_path + '/prediction.txt', 'a')
-
-    os.makedirs(output_path, exist_ok=True)
+    f_prediction = open(output_path, 'a')
 
     # Face detector
     face_detector = dlib.get_frontal_face_detector()
@@ -160,28 +158,18 @@ def test_full_image_network(data_path, model_path, output_path,
         else:
             f_prediction.close()
 
-        # 2. Detect with dlib
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces = face_detector(gray, 1)
-        if len(faces):
-            # For now only take biggest face
-            face = faces[0]
+        # --- Prediction ---------------------------------------------------
 
-            # --- Prediction ---------------------------------------------------
-            # Face crop with dlib and bounding box scale enlargement
-            x, y, size = get_boundingbox(face, width, height)
-            cropped_face = image[y:y+size, x:x+size]
+        # Actual prediction using our model
+        prediction, output = predict_with_model(image, model,
+                                                cuda=cuda)
+        print('prediction:')
+        print(prediction)
 
-            # Actual prediction using our model
-            prediction, output = predict_with_model(cropped_face, model,
-                                                    cuda=cuda)
-            print('prediction:')
-            print(prediction)
+        f_prediction.write('Frame: ' + str(frame_num) + ', Prediction:' + str(prediction) + '\n')
 
-            f_prediction.write('Frame: ' + str(frame_num) + ', Prediction:' + str(prediction) + '\n')
-
-            print('output:')
-            print(output)
+        print('output:')
+        print(output)
 
         cv2.waitKey(33)     # About 30 fps
     pbar.close()
@@ -189,24 +177,25 @@ def test_full_image_network(data_path, model_path, output_path,
 
 """
 # implement param:
--i /home/jc/Faceforensics_onServer/Final_Faceforensics++no_NT-Big/test/0
--m /home/jc/Faceforensics_onServer/Model/xception-b5690688-after15epochs-noNT-Big.pth
--o /home/jc/Faceforensics_onServer/Final_Faceforensics++no_NT-Big/test/0
+-i /home/jc/Faceforensics_onServer/FaceForensics++images-Big/Face2Face/test
+-m /home/jc/Faceforensics_onServer/Model/xception-b5690688-after18epochs-noNT-Big.pth
+-o /home/jc/Faceforensics_onServer/FaceForensics++images-Big/Face2Face/prediction_Face2Face_18epochs.txt
 """
-if __name__ == '__main__':
-    print('CUDA is available: ' + str(torch.cuda.is_available()))
-    print('Device name: ' + torch.cuda.get_device_name(0))
-    p = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    p.add_argument('--data_path', '-i', type=str)
-    p.add_argument('--model_path', '-mi', type=str, default=None)
-    p.add_argument('--output_path', '-o', type=str,
-                   default='.')
-    p.add_argument('--start_frame', type=int, default=0)
-    p.add_argument('--end_frame', type=int, default=1000)
-    p.add_argument('--cuda', action='store_true')
-    args = p.parse_args()
 
-    test_full_image_network(**vars(args))
+print('CUDA is available: ' + str(torch.cuda.is_available()))
+print('Device name: ' + torch.cuda.get_device_name(0))
+p = argparse.ArgumentParser(
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+p.add_argument('--data_path', '-i', type=str)
+p.add_argument('--model_path', '-mi', type=str, default=None)
+
+p.add_argument('--output_path', '-o', type=str,
+               default='.')
+p.add_argument('--start_frame', type=int, default=0)
+p.add_argument('--end_frame', type=int, default=1000)
+p.add_argument('--cuda', action='store_true')
+args = p.parse_args()
+
+test_full_image_network(**vars(args))
 
 
