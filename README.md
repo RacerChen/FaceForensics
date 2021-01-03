@@ -6,7 +6,7 @@ This project fork from https://github.com/ondyari/FaceForensics.
 
 It is convenient to implement their trained model by this original project.
 
-This forked DIY version provide TOOLS for:
+This forked DIY version provides TOOLS for:
 
 ### Data Preprocessing
 
@@ -29,7 +29,7 @@ In directory [/FaceForensics/TrainModel]:
   * Choose batch size in line  37
   * Pretrain the last linear layer with 3 epochs by adding parameter '----pretrain3epochs' like `TrainModel_2.py --pretrain3epochs`
   * Train whole model with 15epochs directly `TrainModel_2.py`
-  *  Save the trained model in Line 199(specify your output path and filename here).
+  * Save the trained model in Line 199(specify your output path and filename here).
 
 ### Model Testing
 
