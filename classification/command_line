@@ -1,0 +1,9 @@
+Related path in terminal running:
+python detect_from_video.py -i ../my_fake_video/test_video.mp4 -m ../Model/faceforensics++_models_subset/face_detection/xception/all_c23.p -o ../output_result
+
+Absolute path in config running:
+python detect_from_video_2.py -i C:\Users\CJJ\Desktop\faceswap\converted2\test_video.mp4 -m ../Model/faceforensics++_models_subset/face_detection/xception/
+all_c23.p -o C:\Users\CJJ\Desktop\faceswap\converted2 --cuda
+
+Run param:
+-i /home/jc/Faceforensics_onServer/dataset/my_fake_video/test_video.mp4 -m /home/jc/Faceforensics_onServer/Model/faceforensics++_models_subset/face_detection/xception/all_c23.p -o /home/jc/Faceforensics_onServer/output_result --cuda

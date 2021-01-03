@@ -1,0 +1,18 @@
+Error1: RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to th
+e CPU.
+
+Solution:
+1. Only use CPU:
+model = torch.load(model_path) ——> model = torch.load(model_path, map_location='cpu')
+*Run successfully*
+2. Try to use GPU:
+pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html
+*Error1 is missing*
+Then
+Error2: jit' has no attribute 'unused'
+Emmm, problems are solved by changing cmd:python detect_from_video.py -i ../my_fake_video/test_video.mp4 -m ../Model/faceforensics++_models_subset/face_detection/xception/all_c23.p -o ../output_result
+(No use of relative directory but absolute one)
+
+When use CUDA again:
+Error3: RuntimeError: Expected object of backend CPU but got backend CUDA for argument #2 'weight'
+model = torch.load(model_path) ——> model = torch.load(model_path, map_location='cuda:0')
